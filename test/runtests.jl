@@ -1,10 +1,26 @@
 using PlyIO
 using StaticArrays
-using Compat
-using Compat.Test
+using Test
 
 @testset "PlyIO" begin
 
+@testset "types" begin
+    ply = Ply()
+    push!(ply, PlyComment("PlyComment"))
+    elt = PlyElement("A", ArrayProperty("x", UInt8[1,2,3]),
+                          ArrayProperty("y", Float32[1.1,2.2,3.3]))
+    push!(ply, elt)
+    @test sprint(show, ply) == """
+          Ply with header:
+           ply
+           format ascii 1.0
+           comment PlyComment
+           element A 3
+           property uint8 x
+           property float32 y
+           end_header"""
+    @test sprint(show, elt) == "PlyElement \"A\" of length 3 with properties [\"x\", \"y\"]"
+end
 
 @testset "simple" begin
     ply = Ply()
